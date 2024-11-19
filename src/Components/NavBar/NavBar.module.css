@@ -1,26 +1,26 @@
-.navbar{
-    width:100vw;
-    background-color: white;
-    height:60px;
-    position: fixed;
-    top:0;
-    padding: 0 40px;
-    display: flex;
-    align-items: center;
-    gap:1%;
-    box-shadow: 0 0 5px lightgray;
+.navbar {
+  background-color: white;
+  height: 60px;
+  position: sticky;
+  top: 0;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 1%;
+  box-shadow: 0 0 5px lightgray;
 }
 
 .navbar p {
-    font-family: 'Roboto-Regular', serif;
-    font-size: 1.4rem;
-    color:rgba(0,0,0,0.45);
-    font-weight: unset;
-
+  font-family: "Roboto-Regular", serif;
+  font-size: 1.4rem;
+  color: rgba(0, 0, 0, 0.45);
+  font-weight: unset;
 }
-.navbar h1{
-    font-family: 'Roboto-Medium', serif;
-    font-size: 2rem;
-    font-weight: unset;
+.navbar h1 {
+  font-family: "Roboto-Medium", serif;
+  font-size: 2rem;
+  font-weight: unset;
 }
-
+.homeIcon {
+  font-size: 14.39px;
+}
