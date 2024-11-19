@@ -18,6 +18,26 @@ html {
   padding-top: 20px;
 }
 
+/* style changes for the Ant Design's TreeSelect Component used in SearchBox Component  */
+
+.ant-select-tree {
+  padding-left: 0 !important; 
+}
+
+.ant-select-tree-treenode {
+  margin-left: 0 !important; 
+}
+
+.ant-select-tree-switcher, .ant-select-tree-switcher-noop{
+  width:0!important;
+  margin-inline-end: 0px!important;
+ }
+.ant-select-tree-title{
+  color: black!important;
+  font-weight: normal!important;
+}
+ 
+/* fonts addition */
 @font-face {
   font-family: "Roboto-Medium";
   src: url("./assets/Roboto/Roboto-Medium.ttf");

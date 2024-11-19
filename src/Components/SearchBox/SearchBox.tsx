@@ -1,7 +1,7 @@
 import styles from "./SearchBox.module.css";
 import Button from "antd/es/button";
-import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
-import { ConfigProvider, TreeSelect } from "antd";
+import { CloseCircleOutlined, LoadingOutlined, SearchOutlined } from "@ant-design/icons";
+import { ConfigProvider, notification, TreeSelect } from "antd";
 import { useState } from "react";
 
 interface packageOption {
@@ -11,6 +11,7 @@ interface packageOption {
 export default function SearchBox() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
+  const [api, contextHolder] = notification.useNotification();
   const allOptions: packageOption[] = [
     { title: "react", value: "react" },
     { title: "express", value: "express" },
@@ -35,13 +36,27 @@ export default function SearchBox() {
   ];
 
   const handleSearchChange = (value: string[]) => {
-    if (selectedPackages.length <= 2 && value.length <= 2)
       setSelectedPackages(value);
   };
 
   const handleCompare = () => {
-    setIsLoading(true);
-    setTimeout(() => setIsLoading(false), 3000);
+    selectedPackages.length > 2?showPackageSelectionError():null;
+    if (selectedPackages.length > 2) {
+      return;
+    } else {
+      setIsLoading(true);
+      setTimeout(() => setIsLoading(false), 3000);
+    }
+  };
+
+  const showPackageSelectionError = () => {
+    api.error({
+      message: 'Error',
+      description:
+        'You can only select 2 packages for comparison',
+      placement:"bottomRight",
+      icon:<CloseCircleOutlined className={styles.crossIconError} />
+    });
   };
 
   return (
@@ -51,20 +66,27 @@ export default function SearchBox() {
           token: {
             borderRadius: 2,
           },
+          components: {
+            TreeSelect: {
+              nodeSelectedBg: "rgba(0, 0, 0, 0.04)",
+            },
+          },
         }}
       >
         <TreeSelect
-          className={styles.borderRadTwo}
-          showSearch
+          disabled={isLoading}
+          className={styles.treeSelect}
           value={selectedPackages}
-          placeholder="Please select"
+          dropdownStyle={{ padding: 0 }}
+          placeholder="Select two packages to compare"
           multiple
+          notFoundContent="No Result Found"
           onChange={(val) => handleSearchChange(val)}
           treeData={allOptions}
         />
 
         <Button
-          disabled={selectedPackages.length !== 2}
+          disabled={selectedPackages.length < 2}
           type="primary"
           icon={isLoading ? <LoadingOutlined /> : <SearchOutlined />}
           onClick={handleCompare}
@@ -72,6 +94,7 @@ export default function SearchBox() {
           Compare
         </Button>
       </ConfigProvider>
+    {contextHolder}
     </div>
   );
 }
