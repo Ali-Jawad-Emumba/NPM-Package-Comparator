@@ -1,6 +1,10 @@
 import styles from "./SearchBox.module.css";
 import Button from "antd/es/button";
-import { CloseCircleOutlined, LoadingOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  CloseCircleOutlined,
+  LoadingOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import { ConfigProvider, notification, TreeSelect } from "antd";
 import { useState } from "react";
 
@@ -36,11 +40,11 @@ export default function SearchBox() {
   ];
 
   const handleSearchChange = (value: string[]) => {
-      setSelectedPackages(value);
+    setSelectedPackages(value);
   };
 
   const handleCompare = () => {
-    selectedPackages.length > 2?showPackageSelectionError():null;
+    selectedPackages.length > 2 ? showPackageSelectionError() : null;
     if (selectedPackages.length > 2) {
       return;
     } else {
@@ -51,11 +55,10 @@ export default function SearchBox() {
 
   const showPackageSelectionError = () => {
     api.error({
-      message: 'Error',
-      description:
-        'You can only select 2 packages for comparison',
-      placement:"bottomRight",
-      icon:<CloseCircleOutlined className={styles.crossIconError} />
+      message: "Error",
+      description: "You can only select 2 packages for comparison",
+      placement: "bottomRight",
+      icon: <CloseCircleOutlined className={styles.crossIconError} />,
     });
   };
 
@@ -94,7 +97,7 @@ export default function SearchBox() {
           Compare
         </Button>
       </ConfigProvider>
-    {contextHolder}
+      {contextHolder}
     </div>
   );
 }

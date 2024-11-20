@@ -1,0 +1,45 @@
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.sparkles {
+  width: 20px;
+}
+
+.recommendedSection {
+  display: grid;
+  grid-template-columns: 60% 30%;
+  gap: 50px;
+}
+.packageDetailsText {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.rowFlex {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.packageDetailCounts {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+.packageDetailCounts div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.packageDetailCounts p {
+  color: rgba(0, 0, 0, 0.45);
+
+  font-size: 14px;
+  margin: 0;
+}
+.packageDetailCounts h3 {
+  font-size: 24px;
+  margin: 0;
+}
