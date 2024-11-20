@@ -12,8 +12,8 @@ export default function Comparison(){
         if (record.name === "Keywords" && Array.isArray(value)) {
           return (
             <>
-              {value.map((val) => (
-                <Tag className={styles.tag}>
+              {value.map((val, index) => (
+                <Tag key={index} className={styles.tag}>
                   {val}
                 </Tag>
               ))}
@@ -26,12 +26,12 @@ export default function Comparison(){
         if ((record.name==='Repository' || record.name==='Authors/Publishers') && Array.isArray(value)){
           return (
             <>
-            {value.map(val=>(<Button type="link">{val}</Button>))}</>
+            {value.map((val, index)=>(<Button key={index} type="link">{val}</Button>))}</>
           )
         }
         if (record.name==='License' && Array.isArray(value)){
           return (
-            <>{value.map(val=>(<Tag className={styles.tag} color="gold">{val}</Tag>))}</>
+            <>{value.map((val, index)=>(<Tag key={index} className={styles.tag} color="gold">{val}</Tag>))}</>
             )
         }
         return value;
@@ -113,7 +113,7 @@ export default function Comparison(){
 
 
     return (
-        <Card title="Comparison" bordered={false} style={{ width: '100%', borderRadius:'2px' }}>
+        <Card title="Comparison" bordered={false} className="card">
          <ConfigProvider theme={{token:{borderRadius:2}}}>
          <Table
 
