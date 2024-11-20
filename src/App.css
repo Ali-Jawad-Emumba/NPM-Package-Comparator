@@ -11,11 +11,16 @@ html {
 .page-body {
   display: flex;
   background-color: #f0f2f5;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
   height: 100vh;
   width: 100%;
   padding-top: 20px;
+}
+.body-container{
+  width:55%;
+  display: flex;
+  flex-direction: column;
+  gap:20px
 }
 
 /* style changes for the Ant Design's TreeSelect Component used in SearchBox Component  */
