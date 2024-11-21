@@ -7,38 +7,55 @@ import {
 } from "@ant-design/icons";
 import { ConfigProvider, notification, TreeSelect } from "antd";
 import { useState } from "react";
+import { debounce } from "lodash";
+import { useDispatch } from "react-redux";
+import { setSelectedPackagesData } from "../../state/slice";
 
-interface packageOption {
+interface PackageOption {
   value: string;
   title: string;
 }
-export default function SearchBox() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+const SearchBox = () => {
+  const [isCompareBtnLoading, setIsCompareBtnLoading] =
+    useState<boolean>(false);
+  const [isListLoading, setIsListLoading] = useState<boolean>(false);
   const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
+  const [packageOptions, setPackageOptions] = useState<PackageOption[]>([]);
   const [api, contextHolder] = notification.useNotification();
-  const allOptions: packageOption[] = [
-    { title: "react", value: "react" },
-    { title: "express", value: "express" },
-    { title: "lodash", value: "lodash" },
-    { title: "axios", value: "axios" },
-    { title: "moment", value: "moment" },
-    { title: "chalk", value: "chalk" },
-    { title: "mongoose", value: "mongoose" },
-    { title: "dotenv", value: "dotenv" },
-    { title: "cors", value: "cors" },
-    { title: "jsonwebtoken", value: "jsonwebtoken" },
-    { title: "redux", value: "redux" },
-    { title: "antd", value: "antd" },
-    { title: "tailwindcss", value: "tailwindcss" },
-    { title: "typescript", value: "typescript" },
-    { title: "nodemon", value: "nodemon" },
-    { title: "eslint", value: "eslint" },
-    { title: "jest", value: "jest" },
-    { title: "webpack", value: "webpack" },
-    { title: "body-parser", value: "body-parser" },
-    { title: "socket.io", value: "socket.io" },
-  ];
+  const [searchedPackagesResults, setSearchedPackagesResults] = useState<any[]>(
+    []
+  );
+  const dispatch = useDispatch();
 
+  const handleUserSearch = (searchedValue: string) => {
+    if (searchedValue) {
+      setIsListLoading(true);
+      const fetchData = async () => {
+        const fetchFn = await fetch(
+          `https://api.npms.io/v2/search?q=${searchedValue}`
+        );
+        const response = await fetchFn.json();
+        const data = response;
+        setSearchedPackagesResults(data.results);
+        setIsListLoading(!data.results && data.results.length === 0);
+        const packagesList: PackageOption[] = data.results.map(
+          (element: any) => ({
+            title: element.package.name,
+            value: element.package.name,
+          })
+        );
+        setPackageOptions(packagesList);
+      };
+      fetchData();
+    } else {
+      setTimeout(() => setPackageOptions([]), 1500);
+
+      isListLoading ? setIsListLoading(false) : null;
+      return;
+    }
+  };
+
+  const debouncedSearch = debounce(handleUserSearch, 500);
   const handleSearchChange = (value: string[]) => {
     setSelectedPackages(value);
   };
@@ -48,8 +65,14 @@ export default function SearchBox() {
     if (selectedPackages.length > 2) {
       return;
     } else {
-      setIsLoading(true);
-      setTimeout(() => setIsLoading(false), 3000);
+      setIsCompareBtnLoading(true);
+      setTimeout(() => {
+        setIsCompareBtnLoading(false);
+        const selectedPackagesData = searchedPackagesResults.filter((result) =>
+          selectedPackages.includes(result.package.name)
+        );
+        dispatch(setSelectedPackagesData(selectedPackagesData));
+      }, 2000);
     }
   };
 
@@ -77,21 +100,30 @@ export default function SearchBox() {
         }}
       >
         <TreeSelect
-          disabled={isLoading}
+          disabled={isCompareBtnLoading}
           className={styles.treeSelect}
           value={selectedPackages}
           dropdownStyle={{ padding: 0 }}
           placeholder="Select two packages to compare"
           multiple
-          notFoundContent="No Result Found"
+          notFoundContent={
+            isListLoading ? (
+              <p>
+                <LoadingOutlined /> Loading...
+              </p>
+            ) : !isListLoading && packageOptions.length === 0 ? null : (
+              "No Result Found"
+            )
+          }
           onChange={(val) => handleSearchChange(val)}
-          treeData={allOptions}
+          onSearch={(val) => debouncedSearch(val)}
+          treeData={packageOptions}
         />
 
         <Button
           disabled={selectedPackages.length < 2}
           type="primary"
-          icon={isLoading ? <LoadingOutlined /> : <SearchOutlined />}
+          icon={isCompareBtnLoading ? <LoadingOutlined /> : <SearchOutlined />}
           onClick={handleCompare}
         >
           Compare
@@ -100,4 +132,6 @@ export default function SearchBox() {
       {contextHolder}
     </div>
   );
-}
+};
+
+export default SearchBox;

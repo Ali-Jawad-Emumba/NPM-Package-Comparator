@@ -1,5 +1,4 @@
 import { Button, Card, ConfigProvider, Table, TableProps, Tag } from "antd";
-import styles from "./Comparison.module.css";
 
 interface ComparisonColumns {
   key?: string;
