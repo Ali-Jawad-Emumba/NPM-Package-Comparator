@@ -9,7 +9,10 @@ import { ConfigProvider, notification, TreeSelect } from "antd";
 import { useState } from "react";
 import { debounce } from "lodash";
 import { useDispatch } from "react-redux";
-import { setSelectedPackagesData } from "../../state/slice";
+import {
+  storeSelectedPackages,
+  storeSelectedPackagesData,
+} from "../../state/slice";
 
 interface PackageOption {
   value: string;
@@ -22,28 +25,23 @@ const SearchBox = () => {
   const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
   const [packageOptions, setPackageOptions] = useState<PackageOption[]>([]);
   const [api, contextHolder] = notification.useNotification();
-  const [searchedPackagesResults, setSearchedPackagesResults] = useState<any[]>(
-    []
-  );
   const dispatch = useDispatch();
 
+  const fetchPackages = async (value: string) => {
+    const fetchFn = await fetch(`https://api.npms.io/v2/search?q=${value}`);
+    const response = await fetchFn.json();
+    return response.results;
+  };
   const handleUserSearch = (searchedValue: string) => {
     if (searchedValue) {
       setIsListLoading(true);
       const fetchData = async () => {
-        const fetchFn = await fetch(
-          `https://api.npms.io/v2/search?q=${searchedValue}`
-        );
-        const response = await fetchFn.json();
-        const data = response;
-        setSearchedPackagesResults(data.results);
-        setIsListLoading(!data.results && data.results.length === 0);
-        const packagesList: PackageOption[] = data.results.map(
-          (element: any) => ({
-            title: element.package.name,
-            value: element.package.name,
-          })
-        );
+        const data = await fetchPackages(searchedValue);
+        setIsListLoading(!data && data.length === 0);
+        const packagesList: PackageOption[] = data.map((element: any) => ({
+          title: element.package.name,
+          value: element.package.name,
+        }));
         setPackageOptions(packagesList);
       };
       fetchData();
@@ -54,28 +52,6 @@ const SearchBox = () => {
       return;
     }
   };
-
-  const debouncedSearch = debounce(handleUserSearch, 500);
-  const handleSearchChange = (value: string[]) => {
-    setSelectedPackages(value);
-  };
-
-  const handleCompare = () => {
-    selectedPackages.length > 2 ? showPackageSelectionError() : null;
-    if (selectedPackages.length > 2) {
-      return;
-    } else {
-      setIsCompareBtnLoading(true);
-      setTimeout(() => {
-        setIsCompareBtnLoading(false);
-        const selectedPackagesData = searchedPackagesResults.filter((result) =>
-          selectedPackages.includes(result.package.name)
-        );
-        dispatch(setSelectedPackagesData(selectedPackagesData));
-      }, 2000);
-    }
-  };
-
   const showPackageSelectionError = () => {
     api.error({
       message: "Error",
@@ -85,6 +61,34 @@ const SearchBox = () => {
     });
   };
 
+  const debouncedSearch = debounce(handleUserSearch, 500);
+  const handleSearchChange = (value: string[]) => {
+    setSelectedPackages(value);
+    dispatch(storeSelectedPackages(value));
+  };
+
+  const handleCompare = async () => {
+    selectedPackages.length > 2 ? showPackageSelectionError() : null;
+    if (selectedPackages.length > 2) {
+      return;
+    } else {
+      setIsCompareBtnLoading(true);
+      const rawPackagesData = await Promise.all(
+        selectedPackages.map(async (val) => await fetchPackages(val))
+      );
+      const resolvedPackagesData = rawPackagesData
+        .flat()
+        .filter((data: any) => selectedPackages.includes(data.package.name));
+
+      const selectedPackagesData = selectedPackages.map((packageName) =>
+        resolvedPackagesData.find(
+          (data: any) => data.package.name === packageName
+        )
+      );
+      if (selectedPackagesData.length === 2) setIsCompareBtnLoading(false);
+      dispatch(storeSelectedPackagesData(selectedPackagesData));
+    }
+  };
   return (
     <div className={styles.searchBoxContainer}>
       <ConfigProvider
