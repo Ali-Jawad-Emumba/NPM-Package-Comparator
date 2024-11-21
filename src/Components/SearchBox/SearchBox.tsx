@@ -32,6 +32,12 @@ const SearchBox = () => {
     const response = await fetchFn.json();
     return response.results;
   };
+
+  const fetchSelectedPackgesDetails = async (value: string) => {
+    const fetchFn = await fetch(`https://api.npms.io/v2/package/${value}`);
+    const response = await fetchFn.json();
+    return response.collected;
+  };
   const handleUserSearch = (searchedValue: string) => {
     if (searchedValue) {
       setIsListLoading(true);
@@ -74,15 +80,17 @@ const SearchBox = () => {
     } else {
       setIsCompareBtnLoading(true);
       const rawPackagesData = await Promise.all(
-        selectedPackages.map(async (val) => await fetchPackages(val))
+        selectedPackages.map(
+          async (val) => await fetchSelectedPackgesDetails(val)
+        )
       );
-      const resolvedPackagesData = rawPackagesData
-        .flat()
-        .filter((data: any) => selectedPackages.includes(data.package.name));
+      const resolvedPackagesData = rawPackagesData.filter((data: any) =>
+        selectedPackages.includes(data?.metadata.name)
+      );
 
       const selectedPackagesData = selectedPackages.map((packageName) =>
         resolvedPackagesData.find(
-          (data: any) => data.package.name === packageName
+          (data: any) => data.metadata.name === packageName
         )
       );
       if (selectedPackagesData.length === 2) setIsCompareBtnLoading(false);

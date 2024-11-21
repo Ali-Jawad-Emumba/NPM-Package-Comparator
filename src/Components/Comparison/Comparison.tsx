@@ -8,7 +8,7 @@ interface ComparisonColumns {
   package1: string | string[];
   package2: string | string[];
 }
-const Comparison=()=>{
+const Comparison = () => {
   const firstPackageData = useSelector(
     (state: State) => state.firstPackageData
   );
@@ -49,8 +49,8 @@ const Comparison=()=>{
               href={
                 record.name === "Repository"
                   ? useFor === "firstPackage"
-                    ? firstPackageData.package.links[val]
-                    : secondPackageData.package.links[val]
+                    ? firstPackageData.metadata.links[val]
+                    : secondPackageData.metadata.links[val]
                   : `mailto: ${val}`
               }
               target="_blank"
@@ -86,7 +86,7 @@ const Comparison=()=>{
       width: "25%",
     },
     {
-      title: firstPackageData.package.name,
+      title: firstPackageData.metadata.name,
       dataIndex: "package1",
       key: "2",
       width: "35%",
@@ -95,7 +95,7 @@ const Comparison=()=>{
         renderCells(record, value, "firstPackage"),
     },
     {
-      title: secondPackageData.package.name,
+      title: secondPackageData.metadata.name,
       dataIndex: "package2",
       key: "3",
       width: "35%",
@@ -117,30 +117,34 @@ const Comparison=()=>{
   };
 
   const getAuthorsPublishersForPackage = (useFor: string) => {
-    const packageData = useFor === "firstPackageData" ? firstPackageData : secondPackageData;
-    
+    const packageData =
+      useFor === "firstPackageData" ? firstPackageData : secondPackageData;
+
     const getEmails = (data: any) => {
-      return Array.isArray(data) ? data.map((val: any) => val.email) : data?.email;
+      return Array.isArray(data)
+        ? data.map((val: any) => val.email)
+        : data?.email;
     };
-    
+
     const authorPublisher = [
-      getEmails(packageData.package.author),
-      getEmails(packageData.package.publisher),
+      getEmails(packageData.metadata.author),
+      getEmails(packageData.metadata.publisher),
     ];
-    
+
     return authorPublisher.flat().length > 0 ? authorPublisher.flat() : "N/A";
   };
-  
+
   const getMaintainersForPackage = (useFor: string) => {
-    const packageData = useFor === "firstPackageData" ? firstPackageData : secondPackageData;
-    
-    const maintainers = Array.isArray(packageData.package.maintainers)
-      ? packageData.package.maintainers.map((val: any) => val.email)
-      : [packageData.package.maintainers?.email];
-    
+    const packageData =
+      useFor === "firstPackageData" ? firstPackageData : secondPackageData;
+
+    const maintainers = Array.isArray(packageData.metadata.maintainers)
+      ? packageData.metadata.maintainers.map((val: any) => val.email)
+      : [packageData.metadata.maintainers?.email];
+
     return maintainers.length > 0 ? maintainers : "N/A";
   };
-  
+
   const checkForEmptyArray = (arrayToCheck: any[]) =>
     Array.isArray(arrayToCheck) && arrayToCheck.length > 0
       ? arrayToCheck
@@ -150,34 +154,40 @@ const Comparison=()=>{
     {
       key: "1",
       name: "Description",
-      package1: firstPackageData.package.description,
-      package2: secondPackageData.package.description,
+      package1: firstPackageData.metadata.description,
+      package2: secondPackageData.metadata.description,
     },
     {
       key: "2",
       name: "Keywords",
-      package1: checkForEmptyArray(firstPackageData.package.keywords),
-      package2: checkForEmptyArray(secondPackageData.package.keywords),
+      package1: checkForEmptyArray(firstPackageData.metadata.keywords),
+      package2: checkForEmptyArray(secondPackageData.metadata.keywords),
     },
     {
       key: "3",
       name: "Repository",
-      package1: checkForEmptyArray(Object.keys(firstPackageData.package.links)),
+      package1: checkForEmptyArray(
+        Object.keys(firstPackageData.metadata.links)
+      ),
       package2: checkForEmptyArray(
-        Object.keys(secondPackageData.package.links)
+        Object.keys(secondPackageData.metadata.links)
       ),
     },
     {
       key: "4",
       name: "License",
-      package1: ["MIT"],
-      package2: ["MIT"],
+      package1: Array.isArray(firstPackageData.metadata.license)
+        ? firstPackageData.metadata.license
+        : [firstPackageData.metadata.license],
+      package2: Array.isArray(secondPackageData.metadata.license)
+        ? secondPackageData.metadata.license
+        : [secondPackageData.metadata.license],
     },
     {
       key: "5",
       name: "Last Modification Date",
-      package1: [firstPackageData.package.date],
-      package2: [secondPackageData.package.date],
+      package1: [firstPackageData.metadata.date],
+      package2: [secondPackageData.metadata.date],
     },
     {
       key: "6",
@@ -207,6 +217,6 @@ const Comparison=()=>{
       </ConfigProvider>
     </Card>
   );
-}
+};
 
-export default Comparison 
+export default Comparison;

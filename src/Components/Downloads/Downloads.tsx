@@ -1,36 +1,67 @@
 import { Card } from "antd";
 import { Line } from "@ant-design/plots";
 import styles from "./Downloads.module.css";
+import { useSelector } from "react-redux";
+import { State } from "../../state/slice";
+import { useEffect, useState } from "react";
 
-export default function Downloads() {
-  const data = [
-    { date: "1991-01-15", downloads: 8, package: "Package A" },
-    { date: "1991-02-10", downloads: 10, package: "Package B" },
-    { date: "1992-03-05", downloads: 12, package: "Package A" },
-    { date: "1992-04-20", downloads: 16, package: "Package B" },
-    { date: "1993-02-15", downloads: 15.5, package: "Package A" },
-    { date: "1993-05-10", downloads: 23.5, package: "Package B" },
-    { date: "1994-01-25", downloads: 20, package: "Package A" },
-    { date: "1994-03-14", downloads: 28, package: "Package B" },
-    { date: "1995-06-05", downloads: 24.9, package: "Package A" },
-    { date: "1995-07-15", downloads: 33.9, package: "Package B" },
-    { date: "1996-01-10", downloads: 30.9, package: "Package A" },
-    { date: "1996-04-12", downloads: 43.9, package: "Package B" },
-    { date: "1997-03-17", downloads: 37.9, package: "Package A" },
-    { date: "1997-08-25", downloads: 54.9, package: "Package B" },
-    { date: "1998-01-30", downloads: 46.9, package: "Package A" },
-    { date: "1998-02-18", downloads: 67.9, package: "Package B" },
-    { date: "1999-05-10", downloads: 59.9, package: "Package A" },
-    { date: "1999-09-02", downloads: 82.9, package: "Package B" },
-  ];
+interface DownloadData {
+  date: string;
+  downloads: number;
+  package: string;
+}
+interface DateOfDownload {
+  from: string;
+  to: string;
+  count: number;
+}
+const Downloads=()=>{
+  const [downloadsData, setDownloadsData] = useState<DownloadData[]>([]);
+  const firstPackageData = useSelector(
+    (state: State) => state.firstPackageData
+  );
+  const secondPackageData = useSelector(
+    (state: State) => state.secondPackageData
+  );
+
+  const prepareDataForDownloads = () => {
+    const convertToDate = (val: string | number | Date) =>
+      new Date(val).toLocaleDateString();
+
+    const preparedDataFirstPackage = firstPackageData.npm.downloads.map(
+      (data: DateOfDownload) => ({
+        date: `${convertToDate(data.from)}-${convertToDate(data.to)}`,
+        downloads: data.count,
+        package: firstPackageData.metadata.name,
+      })
+    );
+    const preparedDataSecondPackage = secondPackageData.npm.downloads.map(
+      (data: DateOfDownload) => ({
+        date: `${convertToDate(data.from)}-${convertToDate(data.to)}`,
+        downloads: data.count,
+        package: secondPackageData.metadata.name,
+      })
+    );
+    const combinedData = [
+      ...preparedDataFirstPackage,
+      ...preparedDataSecondPackage,
+    ];
+    combinedData.sort((a, b) => {
+      const dateA = new Date(a.date.split("-")[0]); // Get the first date from 'from-to' format
+      const dateB = new Date(b.date.split("-")[0]); // Get the first date from 'from-to' format
+      return dateA.getTime() - dateB.getTime(); // Sort in ascending order (oldest first)
+    });
+    setDownloadsData(combinedData);
+  };
+
+  useEffect(() => {
+    prepareDataForDownloads();
+  }, [firstPackageData, secondPackageData]);
 
   const config = {
-    data,
+    data: downloadsData,
     xField: "date",
     yField: "downloads",
-    legend: {
-      marker: "circle",
-    },
     colorField: "package",
     style: {
       lineWidth: 2,
@@ -42,3 +73,4 @@ export default function Downloads() {
     </Card>
   );
 }
+export default Downloads
