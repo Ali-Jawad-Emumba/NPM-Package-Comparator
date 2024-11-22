@@ -9,7 +9,13 @@ import { State } from "../../state/slice";
 import { useEffect, useState } from "react";
 
 interface RecommendedPackage {
-  betterPackage: any;
+  name: any;
+  description: any;
+  keywords: any;
+  repository: any;
+  downloadsCount: any;
+  starsCount: any;
+  health: any;
   timesBetter: any;
 }
 const Recommendation = () => {
@@ -23,28 +29,18 @@ const Recommendation = () => {
   const secondPackageData = useSelector(
     (state: State) => state.secondPackageData
   );
-
   const compareBothPackages = () => {
-    const firstPackageScores = {
-      communityInterest:
-        (firstPackageData.evaluation.popularity.communityInterest / 100) * 30,
-      downloads: firstPackageData.evaluation.popularity.downloadsCount / 2,
+    const evalutaionFirstPackage = firstPackageData.evaluation;
+    const evaluationSecondPackage = secondPackageData.evaluation;
+
+    const getScores = (data: any) => ({
+      communityInterest: (data.popularity.communityInterest / 100) * 30,
+      downloads: data.popularity.downloadsCount / 2,
       testsAndCarefulness:
-        ((firstPackageData.evaluation.quality.tests +
-          firstPackageData.evaluation.quality.carefulness) /
-          100) *
-        30,
-    };
-    const secondPackageScores = {
-      communityInterest:
-        (secondPackageData.evaluation.popularity.communityInterest / 100) * 30,
-      downloads: secondPackageData.evaluation.popularity.downloadsCount / 2,
-      testsAndCarefulness:
-        ((secondPackageData.evaluation.quality.tests +
-          secondPackageData.evaluation.quality.carefulness) /
-          100) *
-        30,
-    };
+        ((data.quality.tests + data.quality.carefulness) / 100) * 30,
+    });
+    const firstPackageScores = getScores(evalutaionFirstPackage);
+    const secondPackageScores = getScores(evaluationSecondPackage);
     const totalScoreFirstPackage = Object.values(firstPackageScores).reduce(
       (sum, score) => (sum += score),
       0
@@ -69,24 +65,30 @@ const Recommendation = () => {
         : differenceInScore / totalScoreFirstPackage;
 
     console.log(totalScoreFirstPackage, totalScoreSecondPackage);
-    setRecommendedPackage({
-      betterPackage: betterPackage,
+    const data = {
+      name: betterPackage.collected.metadata.name,
+      description: betterPackage.collected.metadata.description,
+      keywords: betterPackage.collected.metadata.keywords,
+      repository: betterPackage.collected.metadata.links.repository,
+      downloadsCount: betterPackage.evaluation.popularity.downloadsCount,
+      starsCount: betterPackage.collected.npm.starsCount,
+      health: betterPackage.evaluation.quality.health,
       timesBetter: timesBetter,
-    });
+    };
+
+    setRecommendedPackage(data);
   };
 
-  const formatCount = (val: number) => {
-    if (val >= 1_000_000_000) {
-      return `${Math.round(val / 1_000_000_000)}B${
-        val > 1_000_000_000 ? "+" : ""
-      }`;
-    } else if (val >= 1_000_000) {
-      return `${Math.round(val / 1_000_000)}M${val > 1_000_000 ? "+" : ""}`;
-    } else if (val >= 1000) {
-      return `${Math.round(val / 1000)}K${val > 1000 ? "+" : ""}`;
-    } else {
-      return val;
-    }
+  const formatCount = (val: number): string => {
+    if (val < 1) return val.toFixed(2);
+    const formatWithSuffix = (divisor: number, suffix: string) =>
+      `${Math.round(val / divisor)}${suffix}${val > divisor ? "+" : ""}`;
+
+    if (val >= 1000000000) return formatWithSuffix(1000000000, "B");
+    if (val >= 1000000) return formatWithSuffix(1000000, "M");
+    if (val >= 1000) return formatWithSuffix(1000, "K");
+
+    return val.toString();
   };
 
   useEffect(() => compareBothPackages(), [firstPackageData, secondPackageData]);
@@ -96,7 +98,7 @@ const Recommendation = () => {
         <div className={styles.cardTitle}>
           {sparkleEmoji}
           <p>
-            {recommendedPackage?.betterPackage.collected.metadata.name} is{" "}
+            {recommendedPackage?.name} is{" "}
             {formatCount(recommendedPackage?.timesBetter)} times better
           </p>
           {sparkleEmoji}
@@ -109,32 +111,23 @@ const Recommendation = () => {
         <div className={styles.packageDetailsText}>
           <div className={styles.rowFlex}>
             <CrownOutlined style={{ fontSize: "14.5px" }} />
-            <h2 style={{ margin: 0 }}>
-              {recommendedPackage?.betterPackage.collected.metadata.name}
-            </h2>
+            <h2 style={{ margin: 0 }}>{recommendedPackage?.name}</h2>
             <Tag className="tag" color="blue">
               recommended
             </Tag>
           </div>
-          <p style={{ margin: 0 }}>
-            {recommendedPackage?.betterPackage.collected.metadata.description}
-          </p>
+          <p style={{ margin: 0 }}>{recommendedPackage?.description}</p>
           <div className={styles.packageTags}>
-            {recommendedPackage?.betterPackage.collected.metadata.keywords.map(
-              (tag: string, index: number) => (
-                <Tag key={index} className="tag">
-                  {tag}
-                </Tag>
-              )
-            )}
+            {recommendedPackage?.keywords?.map((tag: string, index: number) => (
+              <Tag key={index} className="tag">
+                {tag}
+              </Tag>
+            ))}
           </div>
           <div className={styles.rowFlex}>
             <a
               className={styles.rowFlex}
-              href={
-                recommendedPackage?.betterPackage.collected.metadata.links
-                  .repository
-              }
+              href={recommendedPackage?.repository}
               target="_blank"
             >
               <img src={infoIcon} /> Repository
@@ -147,28 +140,15 @@ const Recommendation = () => {
         <div className={styles.packageDetailCounts}>
           <div>
             <p>Downloads</p>
-            <h3>
-              {formatCount(
-                recommendedPackage?.betterPackage.evaluation.popularity
-                  .downloadsCount
-              )}
-            </h3>
+            <h3>{formatCount(recommendedPackage?.downloadsCount)}</h3>
           </div>
           <div>
             <p>Stars</p>
-            <h3>
-              {formatCount(
-                recommendedPackage?.betterPackage.collected.npm.starsCount
-              )}
-            </h3>
+            <h3>{formatCount(recommendedPackage?.starsCount)}</h3>
           </div>
           <div>
             <p>Health</p>
-            <h3>
-              {recommendedPackage?.betterPackage.evaluation.quality.health *
-                100}
-              %
-            </h3>
+            <h3>{recommendedPackage?.health * 100}%</h3>
           </div>
         </div>
       </div>

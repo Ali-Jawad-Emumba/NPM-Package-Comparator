@@ -27,19 +27,17 @@ const Downloads = () => {
   const prepareDataForDownloads = () => {
     const convertToDate = (val: string | number | Date) =>
       new Date(val).toLocaleDateString();
+    const dataFirstPackage = firstPackageData.collected;
+    const dataSecondPackage = secondPackageData.collected;
 
-    const preparedDataFirstPackage =
-      firstPackageData.collected.npm.downloads.map((data: DateOfDownload) => ({
+    const getPreparedData = (packageData: any) =>
+      packageData.npm.downloads.map((data: DateOfDownload) => ({
         date: `${convertToDate(data.from)}-${convertToDate(data.to)}`,
         downloads: data.count,
-        package: firstPackageData.collected.metadata.name,
+        package: packageData.metadata.name,
       }));
-    const preparedDataSecondPackage =
-      secondPackageData.collected.npm.downloads.map((data: DateOfDownload) => ({
-        date: `${convertToDate(data.from)}-${convertToDate(data.to)}`,
-        downloads: data.count,
-        package: secondPackageData.collected.metadata.name,
-      }));
+    const preparedDataFirstPackage = getPreparedData(dataFirstPackage);
+    const preparedDataSecondPackage = getPreparedData(dataSecondPackage);
     const combinedData = [
       ...preparedDataFirstPackage,
       ...preparedDataSecondPackage,
