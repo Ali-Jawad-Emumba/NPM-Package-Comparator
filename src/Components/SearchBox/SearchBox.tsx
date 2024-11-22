@@ -36,7 +36,7 @@ const SearchBox = () => {
   const fetchSelectedPackgesDetails = async (value: string) => {
     const fetchFn = await fetch(`https://api.npms.io/v2/package/${value}`);
     const response = await fetchFn.json();
-    return response.collected;
+    return response;
   };
   const handleUserSearch = (searchedValue: string) => {
     if (searchedValue) {
@@ -85,12 +85,12 @@ const SearchBox = () => {
         )
       );
       const resolvedPackagesData = rawPackagesData.filter((data: any) =>
-        selectedPackages.includes(data?.metadata.name)
+        selectedPackages.includes(data.collected.metadata.name)
       );
 
       const selectedPackagesData = selectedPackages.map((packageName) =>
         resolvedPackagesData.find(
-          (data: any) => data.metadata.name === packageName
+          (data: any) => data.collected.metadata.name === packageName
         )
       );
       if (selectedPackagesData.length === 2) setIsCompareBtnLoading(false);

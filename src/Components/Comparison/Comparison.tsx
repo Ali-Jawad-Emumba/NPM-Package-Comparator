@@ -49,8 +49,8 @@ const Comparison = () => {
               href={
                 record.name === "Repository"
                   ? useFor === "firstPackage"
-                    ? firstPackageData.metadata.links[val]
-                    : secondPackageData.metadata.links[val]
+                    ? firstPackageData.collected.metadata.links[val]
+                    : secondPackageData.collected.metadata.links[val]
                   : `mailto: ${val}`
               }
               target="_blank"
@@ -86,7 +86,7 @@ const Comparison = () => {
       width: "25%",
     },
     {
-      title: firstPackageData.metadata.name,
+      title: firstPackageData.collected.metadata.name,
       dataIndex: "package1",
       key: "2",
       width: "35%",
@@ -95,7 +95,7 @@ const Comparison = () => {
         renderCells(record, value, "firstPackage"),
     },
     {
-      title: secondPackageData.metadata.name,
+      title: secondPackageData.collected.metadata.name,
       dataIndex: "package2",
       key: "3",
       width: "35%",
@@ -127,8 +127,8 @@ const Comparison = () => {
     };
 
     const authorPublisher = [
-      getEmails(packageData.metadata.author),
-      getEmails(packageData.metadata.publisher),
+      getEmails(packageData.collected.metadata.author),
+      getEmails(packageData.collected.metadata.publisher),
     ];
 
     return authorPublisher.flat().length > 0 ? authorPublisher.flat() : "N/A";
@@ -138,9 +138,11 @@ const Comparison = () => {
     const packageData =
       useFor === "firstPackageData" ? firstPackageData : secondPackageData;
 
-    const maintainers = Array.isArray(packageData.metadata.maintainers)
-      ? packageData.metadata.maintainers.map((val: any) => val.email)
-      : [packageData.metadata.maintainers?.email];
+    const maintainers = Array.isArray(
+      packageData.collected.metadata.maintainers
+    )
+      ? packageData.collected.metadata.maintainers.map((val: any) => val.email)
+      : [packageData.collected.metadata.maintainers?.email];
 
     return maintainers.length > 0 ? maintainers : "N/A";
   };
@@ -154,40 +156,44 @@ const Comparison = () => {
     {
       key: "1",
       name: "Description",
-      package1: firstPackageData.metadata.description,
-      package2: secondPackageData.metadata.description,
+      package1: firstPackageData.collected.metadata.description,
+      package2: secondPackageData.collected.metadata.description,
     },
     {
       key: "2",
       name: "Keywords",
-      package1: checkForEmptyArray(firstPackageData.metadata.keywords),
-      package2: checkForEmptyArray(secondPackageData.metadata.keywords),
+      package1: checkForEmptyArray(
+        firstPackageData.collected.metadata.keywords
+      ),
+      package2: checkForEmptyArray(
+        secondPackageData.collected.metadata.keywords
+      ),
     },
     {
       key: "3",
       name: "Repository",
       package1: checkForEmptyArray(
-        Object.keys(firstPackageData.metadata.links)
+        Object.keys(firstPackageData.collected.metadata.links)
       ),
       package2: checkForEmptyArray(
-        Object.keys(secondPackageData.metadata.links)
+        Object.keys(secondPackageData.collected.metadata.links)
       ),
     },
     {
       key: "4",
       name: "License",
-      package1: Array.isArray(firstPackageData.metadata.license)
-        ? firstPackageData.metadata.license
-        : [firstPackageData.metadata.license],
-      package2: Array.isArray(secondPackageData.metadata.license)
-        ? secondPackageData.metadata.license
-        : [secondPackageData.metadata.license],
+      package1: Array.isArray(firstPackageData.collected.metadata.license)
+        ? firstPackageData.collected.metadata.license
+        : [firstPackageData.collected.metadata.license],
+      package2: Array.isArray(secondPackageData.collected.metadata.license)
+        ? secondPackageData.collected.metadata.license
+        : [secondPackageData.collected.metadata.license],
     },
     {
       key: "5",
       name: "Last Modification Date",
-      package1: [firstPackageData.metadata.date],
-      package2: [secondPackageData.metadata.date],
+      package1: [firstPackageData.collected.metadata.date],
+      package2: [secondPackageData.collected.metadata.date],
     },
     {
       key: "6",

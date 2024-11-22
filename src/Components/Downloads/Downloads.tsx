@@ -15,7 +15,7 @@ interface DateOfDownload {
   to: string;
   count: number;
 }
-const Downloads=()=>{
+const Downloads = () => {
   const [downloadsData, setDownloadsData] = useState<DownloadData[]>([]);
   const firstPackageData = useSelector(
     (state: State) => state.firstPackageData
@@ -28,20 +28,18 @@ const Downloads=()=>{
     const convertToDate = (val: string | number | Date) =>
       new Date(val).toLocaleDateString();
 
-    const preparedDataFirstPackage = firstPackageData.npm.downloads.map(
-      (data: DateOfDownload) => ({
+    const preparedDataFirstPackage =
+      firstPackageData.collected.npm.downloads.map((data: DateOfDownload) => ({
         date: `${convertToDate(data.from)}-${convertToDate(data.to)}`,
         downloads: data.count,
-        package: firstPackageData.metadata.name,
-      })
-    );
-    const preparedDataSecondPackage = secondPackageData.npm.downloads.map(
-      (data: DateOfDownload) => ({
+        package: firstPackageData.collected.metadata.name,
+      }));
+    const preparedDataSecondPackage =
+      secondPackageData.collected.npm.downloads.map((data: DateOfDownload) => ({
         date: `${convertToDate(data.from)}-${convertToDate(data.to)}`,
         downloads: data.count,
-        package: secondPackageData.metadata.name,
-      })
-    );
+        package: secondPackageData.collected.metadata.name,
+      }));
     const combinedData = [
       ...preparedDataFirstPackage,
       ...preparedDataSecondPackage,
@@ -72,5 +70,5 @@ const Downloads=()=>{
       <Line {...config} className={styles.lineChart} />
     </Card>
   );
-}
-export default Downloads
+};
+export default Downloads;
