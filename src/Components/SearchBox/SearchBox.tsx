@@ -118,6 +118,7 @@ const SearchBox = () => {
           onChange={(val) => handleSearchChange(val)}
           onSearch={(val) => debouncedSearch(val)}
           treeData={packageOptions}
+
         />
 
         <Button
