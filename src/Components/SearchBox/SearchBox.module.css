@@ -2,10 +2,10 @@
   width: 100%;
   background-color: white;
   display: grid;
-  grid-template-columns: 1fr 20%;
+  grid-template-columns: 1fr 17%;
   justify-content: center;
   align-items: center;
-  padding: 30px 50px;
+  padding: 20px 30px;
   box-sizing: border-box;
 }
 
@@ -17,4 +17,9 @@
 
 .crossIconError {
   color: #1890ff;
+}
+.compareBtn{
+  height: 40px;
+  font-family: 'Roboto-Regular';
+  font-size: 1.6rem;
 }

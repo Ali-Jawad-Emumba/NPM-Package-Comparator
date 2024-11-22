@@ -29,6 +29,8 @@ html {
 
 .tag {
   border-radius: 2px;
+  font-size: 1.2rem;
+  font-family: 'Roboto-Regular';
 }
 /* style changes for the Ant Design's TreeSelect Component used in SearchBox Component  */
 
@@ -49,6 +51,35 @@ html {
   color: black !important;
   font-weight: normal !important;
 }
+.ant-select-outlined.ant-select-multiple .ant-select-selection-item{
+  height: 30px!important;
+}
+.ant-select-multiple .ant-select-selection-overflow .ant-select-selection-item-content{
+  margin-top:auto!important;
+  margin-bottom:auto!important;
+  font-family: 'Roboto-Regular';
+  font-size: 1.6rem;
+}
+.ant-select-selector{
+  height:40px!important
+}
+.anticon svg{
+  font-size:1.4rem
+}
+
+
+.ant-table-wrapper .ant-table-tbody >tr >th,
+.ant-table-wrapper .ant-table-thead >tr>th,
+.ant-card .ant-card-head-title{
+  font-family: 'Roboto-Medium';
+  font-weight: 500;
+}
+
+
+.ant-card .ant-card-head-title{
+  font-size: 1.6rem;
+}
+
 
 /* fonts addition */
 @font-face {

@@ -22,6 +22,18 @@
   align-items: center;
   gap: 10px;
 }
+.recommendedPackageName {
+  margin: 0;
+  font-family: 'Roboto-Medium';
+  font-size: 2rem;
+  font-weight: unset;
+}
+.recommendedDetail {
+  margin: 0;
+  font-family: 'Roboto-Regular';
+  font-size: 1.3rem;
+  font-weight: unset;
+}
 .packageDetailCounts {
   display: flex;
   align-items: center;
@@ -35,12 +47,20 @@
 }
 .packageDetailCounts p {
   color: rgba(0, 0, 0, 0.45);
-
-  font-size: 14px;
+  font-family: 'Roboto-Regular';
+  font-size: 1.4rem;
   margin: 0;
 }
+.timesBetter{
+  font-size: 2.4rem;
+}
+.crownSymbol{
+  font-size: 1.45rem;
+}
 .packageDetailCounts h3 {
-  font-size: 24px;
+  font-size: 2.4rem;
+  font-family: 'Roboto-Regular';
+  font-weight: unset;
   margin: 0;
 }
 .packageTags {
@@ -48,4 +68,13 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px 5px;
+}
+.repoDocLinks{
+  color:rgba(0, 0, 0, 0.45);
+  font-size: 1.4rem;
+  font-family: 'Roboto-Regular';
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }

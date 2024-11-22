@@ -103,7 +103,10 @@ const Recommendation = () => {
           {sparkleEmoji}
           <p>
             {recommendedPackage?.name} is{" "}
-            {formatCount(recommendedPackage?.timesBetter)} times better
+            <span className={styles.timesBetter}>
+              {formatCount(recommendedPackage?.timesBetter)}
+            </span>{" "}
+            times better
           </p>
           {sparkleEmoji}
         </div>
@@ -114,13 +117,17 @@ const Recommendation = () => {
       <div className={styles.recommendedSection}>
         <div className={styles.packageDetailsText}>
           <div className={styles.rowFlex}>
-            <CrownOutlined style={{ fontSize: "14.5px" }} />
-            <h2 style={{ margin: 0 }}>{recommendedPackage?.name}</h2>
+            <CrownOutlined className={styles.crownSymbol} />
+            <h2 className={styles.recommendedPackageName}>
+              {recommendedPackage?.name}
+            </h2>
             <Tag className="tag" color="blue">
               recommended
             </Tag>
           </div>
-          <p style={{ margin: 0 }}>{recommendedPackage?.description}</p>
+          <p className={styles.recommendedDetail}>
+            {recommendedPackage?.description}
+          </p>
           <div className={styles.packageTags}>
             {recommendedPackage?.keywords?.map((tag: string, index: number) => (
               <Tag key={index} className="tag">
@@ -130,13 +137,13 @@ const Recommendation = () => {
           </div>
           <div className={styles.rowFlex}>
             <a
-              className={styles.rowFlex}
+              className={styles.repoDocLinks}
               href={recommendedPackage?.repository}
               target="_blank"
             >
               <img src={infoIcon} /> Repository
             </a>
-            <a className={styles.rowFlex}>
+            <a className={styles.repoDocLinks}>
               <img src={docIcon} /> Documentation
             </a>
           </div>

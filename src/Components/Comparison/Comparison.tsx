@@ -1,6 +1,7 @@
 import { Button, Card, ConfigProvider, Table, TableProps, Tag } from "antd";
 import { useSelector } from "react-redux";
 import { State } from "../../state/slice";
+import styles from './Comparison.module.css'
 
 interface ComparisonColumns {
   key?: string;
@@ -34,7 +35,7 @@ const Comparison = () => {
       );
     }
     if (record.name === "Description") {
-      return <p style={{ textAlign: "left" }}>{value || "N/A"}</p>;
+      return <p className={styles.descriptionRecord}>{value || "N/A"}</p>;
     }
     if (
       (record.name === "Repository" ||
@@ -48,6 +49,7 @@ const Comparison = () => {
             <Button
               key={index}
               type="link"
+              className={styles.comparisonLinks}
               href={
                 record.name === "Repository"
                   ? useFor === "firstPackage"
@@ -66,11 +68,10 @@ const Comparison = () => {
     if (record.name === "License" && Array.isArray(value)) {
       return (
         <>
-          {value.map((val, index) => (
-            <Tag key={index} className="tag" color="gold">
+          {value.map((val, index) => { if (val) return<Tag key={index} className="tag" color="gold">
               {val}
             </Tag>
-          ))}
+    })}
         </>
       );
     }
@@ -207,7 +208,7 @@ const Comparison = () => {
 
   return (
     <Card title="Comparison" bordered={false} className="card">
-      <ConfigProvider theme={{ token: { borderRadius: 2 } }}>
+      <ConfigProvider theme={{ token: { borderRadius: 2, fontFamily:'Roboto-Regular', fontSize:14 } }}>
         <Table
           columns={columns}
           dataSource={data}

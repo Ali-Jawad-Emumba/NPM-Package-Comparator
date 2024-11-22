@@ -125,6 +125,7 @@ const SearchBox = () => {
           type="primary"
           icon={isCompareBtnLoading ? <LoadingOutlined /> : <SearchOutlined />}
           onClick={handleCompare}
+          className={styles.compareBtn}
         >
           Compare
         </Button>
