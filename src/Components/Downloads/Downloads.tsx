@@ -31,7 +31,7 @@ const Downloads = () => {
     const dataSecondPackage = secondPackageData.collected;
 
     const getPreparedData = (packageData: any) =>
-      packageData.npm.downloads.map((data: DateOfDownload) => ({
+      packageData.npm?.downloads.map((data: DateOfDownload) => ({
         date: `${convertToDate(data.from)}-${convertToDate(data.to)}`,
         downloads: data.count,
         package: packageData.metadata.name,
@@ -39,8 +39,8 @@ const Downloads = () => {
     const preparedDataFirstPackage = getPreparedData(dataFirstPackage);
     const preparedDataSecondPackage = getPreparedData(dataSecondPackage);
     const combinedData = [
-      ...preparedDataFirstPackage,
-      ...preparedDataSecondPackage,
+      ...preparedDataFirstPackage||[],
+      ...preparedDataSecondPackage||[],
     ];
     combinedData.sort((a, b) => {
       const dateA = new Date(a.date.split("-")[0]); // Get the first date from 'from-to' format

@@ -71,7 +71,7 @@ const Recommendation = () => {
       keywords: betterPackage.collected.metadata.keywords,
       repository: betterPackage.collected.metadata.links.repository,
       downloadsCount: betterPackage.evaluation.popularity.downloadsCount,
-      starsCount: betterPackage.collected.npm.starsCount,
+      starsCount: betterPackage.collected.npm?.starsCount,
       health: betterPackage.evaluation.quality.health,
       timesBetter: timesBetter,
     };
@@ -79,16 +79,20 @@ const Recommendation = () => {
     setRecommendedPackage(data);
   };
 
-  const formatCount = (val: number): string => {
-    if (val < 1) return val.toFixed(2);
+  const formatCount = (val: number) => {
     const formatWithSuffix = (divisor: number, suffix: string) =>
       `${Math.round(val / divisor)}${suffix}${val > divisor ? "+" : ""}`;
 
-    if (val >= 1000000000) return formatWithSuffix(1000000000, "B");
-    if (val >= 1000000) return formatWithSuffix(1000000, "M");
-    if (val >= 1000) return formatWithSuffix(1000, "K");
-
-    return val.toString();
+    if (val >= 1000000000) {
+      return formatWithSuffix(1000000000, "B");
+    } else if (val >= 1000000) {
+      return formatWithSuffix(1000000, "M");
+    } else if (val >= 1000) {
+      return formatWithSuffix(1000, "K");
+    } else if (val % 1 !== 0) return val?.toFixed(2);
+    else {
+      return val;
+    }
   };
 
   useEffect(() => compareBothPackages(), [firstPackageData, secondPackageData]);

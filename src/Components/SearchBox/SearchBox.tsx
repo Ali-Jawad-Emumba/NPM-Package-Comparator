@@ -9,10 +9,7 @@ import { ConfigProvider, notification, TreeSelect } from "antd";
 import { useState } from "react";
 import { debounce } from "lodash";
 import { useDispatch } from "react-redux";
-import {
-  storeSelectedPackages,
-  storeSelectedPackagesData,
-} from "../../state/slice";
+import { storeSelectedPackagesData } from "../../state/slice";
 
 interface PackageOption {
   value: string;
@@ -34,7 +31,8 @@ const SearchBox = () => {
   };
 
   const fetchSelectedPackgesDetails = async (value: string) => {
-    const fetchFn = await fetch(`https://api.npms.io/v2/package/${value}`);
+    const encodedVal = encodeURIComponent(value).replace(/%40/g, "@");
+    const fetchFn = await fetch(`https://api.npms.io/v2/package/${encodedVal}`);
     const response = await fetchFn.json();
     return response;
   };
@@ -66,11 +64,9 @@ const SearchBox = () => {
       icon: <CloseCircleOutlined className={styles.crossIconError} />,
     });
   };
-
   const debouncedSearch = debounce(handleUserSearch, 500);
   const handleSearchChange = (value: string[]) => {
     setSelectedPackages(value);
-    dispatch(storeSelectedPackages(value));
   };
 
   const handleCompare = async () => {
@@ -79,21 +75,13 @@ const SearchBox = () => {
       return;
     } else {
       setIsCompareBtnLoading(true);
-      const rawPackagesData = await Promise.all(
+      let selectedPackagesData = await Promise.all(
         selectedPackages.map(
           async (val) => await fetchSelectedPackgesDetails(val)
         )
       );
-      const resolvedPackagesData = rawPackagesData.filter((data: any) =>
-        selectedPackages.includes(data.collected.metadata.name)
-      );
-
-      const selectedPackagesData = selectedPackages.map((packageName) =>
-        resolvedPackagesData.find(
-          (data: any) => data.collected.metadata.name === packageName
-        )
-      );
-      if (selectedPackagesData.length === 2) setIsCompareBtnLoading(false);
+      selectedPackagesData = selectedPackagesData.filter((data) => !data.code);
+      setIsCompareBtnLoading(false);
       dispatch(storeSelectedPackagesData(selectedPackagesData));
     }
   };
