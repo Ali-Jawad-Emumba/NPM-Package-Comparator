@@ -29,6 +29,8 @@ const Recommendation = () => {
   const secondPackageData = useSelector(
     (state: State) => state.secondPackageData
   );
+  useEffect(() => compareBothPackages(), [firstPackageData, secondPackageData]);
+
   const compareBothPackages = () => {
     const evalutaionFirstPackage = firstPackageData.evaluation;
     const evaluationSecondPackage = secondPackageData.evaluation;
@@ -95,7 +97,6 @@ const Recommendation = () => {
     }
   };
 
-  useEffect(() => compareBothPackages(), [firstPackageData, secondPackageData]);
   return (
     <Card
       title={
@@ -166,4 +167,5 @@ const Recommendation = () => {
     </Card>
   );
 };
+
 export default Recommendation;

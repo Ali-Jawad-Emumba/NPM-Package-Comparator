@@ -23,6 +23,19 @@ const Downloads = () => {
   const secondPackageData = useSelector(
     (state: State) => state.secondPackageData
   );
+  const config = {
+    data: downloadsData,
+    xField: "date",
+    yField: "downloads",
+    colorField: "package",
+    style: {
+      lineWidth: 2,
+    },
+  };
+
+  useEffect(() => {
+    prepareDataForDownloads();
+  }, [firstPackageData, secondPackageData]);
 
   const prepareDataForDownloads = () => {
     const convertToDate = (val: string | number | Date) =>
@@ -39,8 +52,8 @@ const Downloads = () => {
     const preparedDataFirstPackage = getPreparedData(dataFirstPackage);
     const preparedDataSecondPackage = getPreparedData(dataSecondPackage);
     const combinedData = [
-      ...preparedDataFirstPackage||[],
-      ...preparedDataSecondPackage||[],
+      ...(preparedDataFirstPackage || []),
+      ...(preparedDataSecondPackage || []),
     ];
     combinedData.sort((a, b) => {
       const dateA = new Date(a.date.split("-")[0]); // Get the first date from 'from-to' format
@@ -50,23 +63,11 @@ const Downloads = () => {
     setDownloadsData(combinedData);
   };
 
-  useEffect(() => {
-    prepareDataForDownloads();
-  }, [firstPackageData, secondPackageData]);
-
-  const config = {
-    data: downloadsData,
-    xField: "date",
-    yField: "downloads",
-    colorField: "package",
-    style: {
-      lineWidth: 2,
-    },
-  };
   return (
     <Card title="Downloads" bordered={false} className="card">
       <Line {...config} className={styles.lineChart} />
     </Card>
   );
 };
+
 export default Downloads;
