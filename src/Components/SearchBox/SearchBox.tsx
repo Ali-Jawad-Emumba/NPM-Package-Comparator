@@ -15,7 +15,7 @@ interface PackageOption {
   value: string;
   title: string;
 }
-const SearchBox = () => {
+const SearchBox: React.FC = () => {
   const [isCompareBtnLoading, setIsCompareBtnLoading] =
     useState<boolean>(false);
   const [isListLoading, setIsListLoading] = useState<boolean>(false);
@@ -118,7 +118,6 @@ const SearchBox = () => {
           onChange={(val) => handleSearchChange(val)}
           onSearch={(val) => debouncedSearch(val)}
           treeData={packageOptions}
-
         />
 
         <Button

@@ -15,7 +15,7 @@ interface DateOfDownload {
   to: string;
   count: number;
 }
-const Downloads = () => {
+const Downloads:React.FC = () => {
   const [downloadsData, setDownloadsData] = useState<DownloadData[]>([]);
   const firstPackageData = useSelector(
     (state: State) => state.firstPackageData

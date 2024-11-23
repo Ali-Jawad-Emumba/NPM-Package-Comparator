@@ -11,7 +11,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 50px;
+  gap: 50px 2%;
 }
 .packageDetailsText {
   display: flex;
@@ -85,14 +85,14 @@
 
 @media screen and (min-width: 992px) {
   .recommendedSection {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+  grid-template-columns: 60% 40%;
     justify-content: space-between;
   }
   .packageDetailCounts {
     display: flex;
     align-items: center;
-    flex-direction: row;
+    flex-wrap: wrap;
   }
   .packageDetailsText {
     justify-content: initial;

@@ -9,7 +9,7 @@ interface ComparisonColumns {
   package1: string | string[];
   package2: string | string[];
 }
-const Comparison = () => {
+const Comparison:React.FC = () => {
   const firstPackageData = useSelector(
     (state: State) => state.firstPackageData
   );

@@ -9,16 +9,16 @@ import { State } from "../../state/slice";
 import { useEffect, useState } from "react";
 
 interface RecommendedPackage {
-  name: any;
-  description: any;
-  keywords: any;
-  repository: any;
+  name: string;
+  description: string;
+  keywords: string[];
+  repository: string;
   downloadsCount: any;
   starsCount: any;
   health: any;
   timesBetter: any;
 }
-const Recommendation = () => {
+const Recommendation: React.FC = () => {
   const [recommendedPackage, setRecommendedPackage] =
     useState<RecommendedPackage>();
   const sparkleEmoji = <img className={styles.sparkles} src={sparkels} />;
@@ -99,6 +99,7 @@ const Recommendation = () => {
 
   return (
     <Card
+      data-testid="recommendation-card"
       title={
         <div className={styles.cardTitle}>
           {sparkleEmoji}
@@ -115,23 +116,32 @@ const Recommendation = () => {
       bordered={false}
       className="card"
     >
-      <div className={styles.recommendedSection}>
+      <div
+        data-testid="recommendation-section"
+        className={styles.recommendedSection}
+      >
         <div className={styles.packageDetailsText}>
           <div className={styles.rowFlex}>
-            <CrownOutlined className={styles.crownSymbol} />
-            <h2 className={styles.recommendedPackageName}>
+            <CrownOutlined
+              data-testid="crown-icon"
+              className={styles.crownSymbol}
+            />
+            <h2
+              data-testid="package-name"
+              className={styles.recommendedPackageName}
+            >
               {recommendedPackage?.name}
             </h2>
-            <Tag className="tag" color="blue">
+            <Tag data-testid="tags" className="tag" color="blue">
               recommended
             </Tag>
           </div>
-          <p className={styles.recommendedDetail}>
+          <p data-testid="description" className={styles.recommendedDetail}>
             {recommendedPackage?.description}
           </p>
           <div className={styles.packageTags}>
             {recommendedPackage?.keywords?.map((tag: string, index: number) => (
-              <Tag key={index} className="tag">
+              <Tag data-testid="tags" key={index} className="tag">
                 {tag}
               </Tag>
             ))}
@@ -141,24 +151,25 @@ const Recommendation = () => {
               className={styles.repoDocLinks}
               href={recommendedPackage?.repository}
               target="_blank"
+              data-testid="links"
             >
               <img src={infoIcon} /> Repository
             </a>
-            <a className={styles.repoDocLinks}>
+            <a className={styles.repoDocLinks} data-testid="links">
               <img src={docIcon} /> Documentation
             </a>
           </div>
         </div>
         <div className={styles.packageDetailCounts}>
-          <div>
+          <div data-testid="count">
             <p>Downloads</p>
             <h3>{formatCount(recommendedPackage?.downloadsCount)}</h3>
           </div>
-          <div>
+          <div data-testid="count">
             <p>Stars</p>
             <h3>{formatCount(recommendedPackage?.starsCount)}</h3>
           </div>
-          <div>
+          <div data-testid="count">
             <p>Health</p>
             <h3>{recommendedPackage?.health * 100}%</h3>
           </div>
