@@ -152,7 +152,7 @@ const Comparison:React.FC = () => {
     return maintainersArray.length > 0 ? maintainersArray : "N/A";
   };
 
-  const checkForEmptyArray = (arrayToCheck: any[]) =>
+  const checkForEmptyArray = (arrayToCheck: string | any[]) =>
     Array.isArray(arrayToCheck) && arrayToCheck.length > 0
       ? arrayToCheck
       : "N/A";

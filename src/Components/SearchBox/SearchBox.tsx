@@ -15,6 +15,9 @@ interface PackageOption {
   value: string;
   title: string;
 }
+interface PackageItem {
+  package: { name: string };
+}
 const SearchBox: React.FC = () => {
   const [isCompareBtnLoading, setIsCompareBtnLoading] =
     useState<boolean>(false);
@@ -42,10 +45,12 @@ const SearchBox: React.FC = () => {
       const fetchData = async () => {
         const data = await fetchPackages(searchedValue);
         setIsListLoading(!data && data.length === 0);
-        const packagesList: PackageOption[] = data.map((element: any) => ({
-          title: element.package.name,
-          value: element.package.name,
-        }));
+        const packagesList: PackageOption[] = data.map(
+          (element: PackageItem) => ({
+            title: element.package.name,
+            value: element.package.name,
+          })
+        );
         setPackageOptions(packagesList);
       };
       fetchData();

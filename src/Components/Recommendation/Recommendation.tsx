@@ -18,6 +18,11 @@ interface RecommendedPackage {
   health: any;
   timesBetter: any;
 }
+
+interface ScoreData {
+  popularity: { communityInterest: number; downloadsCount: number };
+  quality: { tests: number; carefulness: number };
+}
 const Recommendation: React.FC = () => {
   const [recommendedPackage, setRecommendedPackage] =
     useState<RecommendedPackage>();
@@ -35,7 +40,7 @@ const Recommendation: React.FC = () => {
     const evalutaionFirstPackage = firstPackageData.evaluation;
     const evaluationSecondPackage = secondPackageData.evaluation;
 
-    const getScores = (data: any) => ({
+    const getScores = (data: ScoreData) => ({
       communityInterest: (data.popularity.communityInterest / 100) * 30,
       downloads: data.popularity.downloadsCount / 2,
       testsAndCarefulness:
