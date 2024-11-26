@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { it, expect } from "vitest";
 import SearchBox from "./SearchBox";
 import { Provider } from "react-redux";
-import { mockStore } from "../../utils";
+import { mockStore } from "../../utils/__tests__/mocks/mockData";
 
 const description =
   "shall render TreeSelect component and Compare Btn and disable/enable based on selectedVals, as well as change the compare btn icon on click";

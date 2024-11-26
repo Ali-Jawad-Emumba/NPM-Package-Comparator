@@ -4,12 +4,12 @@ import NavBar from "./Components/NavBar/NavBar";
 import SearchBox from "./Components/SearchBox/SearchBox";
 import Comparison from "./Components/Comparison/Comparison";
 import { Card } from "antd";
-import { State } from "./state/slice";
 import Recommendation from "./Components/Recommendation/Recommendation";
 import { Provider, useSelector } from "react-redux";
 import store from "./state/store";
+import { State } from "./utils/types";
 
-const AppTestComponent:React.FC = () => {
+const AppTestComponent: React.FC = () => {
   const selectedPackagesData = useSelector((state: State) => [
     state.firstPackageData,
     state.secondPackageData,

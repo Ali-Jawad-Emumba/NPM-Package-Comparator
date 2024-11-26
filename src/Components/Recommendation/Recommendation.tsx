@@ -5,24 +5,9 @@ import { CrownOutlined } from "@ant-design/icons";
 import docIcon from "../../assets/documnetation icon.svg";
 import infoIcon from "../../assets/info icon.svg";
 import { useSelector } from "react-redux";
-import { State } from "../../state/slice";
 import { useEffect, useState } from "react";
+import { RecommendedPackage, ScoreData, State } from "../../utils/types";
 
-interface RecommendedPackage {
-  name: string;
-  description: string;
-  keywords: string[];
-  repository: string;
-  downloadsCount: any;
-  starsCount: any;
-  health: any;
-  timesBetter: any;
-}
-
-interface ScoreData {
-  popularity: { communityInterest: number; downloadsCount: number };
-  quality: { tests: number; carefulness: number };
-}
 const Recommendation: React.FC = () => {
   const [recommendedPackage, setRecommendedPackage] =
     useState<RecommendedPackage>();
@@ -41,10 +26,10 @@ const Recommendation: React.FC = () => {
     const evaluationSecondPackage = secondPackageData.evaluation;
 
     const getScores = (data: ScoreData) => ({
-      communityInterest: (data.popularity.communityInterest / 100) * 30,
-      downloads: data.popularity.downloadsCount / 2,
+      communityInterest: (data?.popularity.communityInterest / 100) * 30,
+      downloads: data?.popularity.downloadsCount / 2,
       testsAndCarefulness:
-        ((data.quality.tests + data.quality.carefulness) / 100) * 30,
+        ((data?.quality.tests + data?.quality.carefulness) / 100) * 30,
     });
     const firstPackageScores = getScores(evalutaionFirstPackage);
     const secondPackageScores = getScores(evaluationSecondPackage);
@@ -52,7 +37,6 @@ const Recommendation: React.FC = () => {
       (sum, score) => (sum += score),
       0
     );
-    console.log(Object.values(firstPackageScores));
     const totalScoreSecondPackage = Object.values(secondPackageScores).reduce(
       (sum, score) => (sum += score),
       0
@@ -71,15 +55,14 @@ const Recommendation: React.FC = () => {
         ? differenceInScore / totalScoreSecondPackage
         : differenceInScore / totalScoreFirstPackage;
 
-    console.log(totalScoreFirstPackage, totalScoreSecondPackage);
     const data = {
       name: betterPackage.collected.metadata.name,
       description: betterPackage.collected.metadata.description,
       keywords: betterPackage.collected.metadata.keywords,
       repository: betterPackage.collected.metadata.links.repository,
-      downloadsCount: betterPackage.evaluation.popularity.downloadsCount,
+      downloadsCount: betterPackage.evaluation?.popularity.downloadsCount,
       starsCount: betterPackage.collected.npm?.starsCount,
-      health: betterPackage.evaluation.quality.health,
+      health: betterPackage.evaluation?.quality.health,
       timesBetter: timesBetter,
     };
 

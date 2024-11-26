@@ -5,7 +5,7 @@ import Downloads from "./Components/Downloads/Downloads";
 import NavBar from "./Components/NavBar/NavBar";
 import Recommendation from "./Components/Recommendation/Recommendation";
 import SearchBox from "./Components/SearchBox/SearchBox";
-import { State } from "./state/slice";
+import { State } from "./utils/types";
 
 function App() {
   const selectedPackagesData = useSelector((state: State) => [

@@ -2,11 +2,9 @@ import { render, screen } from "@testing-library/react";
 import { it, expect } from "vitest";
 import Recommendation from "./Recommendation";
 import { Provider } from "react-redux";
-import { mockStore } from "../../utils";
-
+import { mockStore } from "../../utils/__tests__/mocks/mockData";
 
 it("shall render recommendation component", () => {
-    
   render(
     <Provider store={mockStore}>
       <Recommendation />

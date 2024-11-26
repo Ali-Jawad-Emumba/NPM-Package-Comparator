@@ -2,20 +2,10 @@ import { Card } from "antd";
 import { Line } from "@ant-design/plots";
 import styles from "./Downloads.module.css";
 import { useSelector } from "react-redux";
-import { State } from "../../state/slice";
 import { useEffect, useState } from "react";
+import { DateOfDownload, DownloadData, State } from "../../utils/types";
 
-interface DownloadData {
-  date: string;
-  downloads: number;
-  package: string;
-}
-interface DateOfDownload {
-  from: string;
-  to: string;
-  count: number;
-}
-const Downloads:React.FC = () => {
+const Downloads: React.FC = () => {
   const [downloadsData, setDownloadsData] = useState<DownloadData[]>([]);
   const firstPackageData = useSelector(
     (state: State) => state.firstPackageData

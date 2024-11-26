@@ -1,15 +1,9 @@
 import { Button, Card, ConfigProvider, Table, TableProps, Tag } from "antd";
 import { useSelector } from "react-redux";
-import { State } from "../../state/slice";
-import styles from './Comparison.module.css'
+import styles from "./Comparison.module.css";
+import { ComparisonColumns, State } from "../../utils/types";
 
-interface ComparisonColumns {
-  key?: string;
-  name: string;
-  package1: string | string[];
-  package2: string | string[];
-}
-const Comparison:React.FC = () => {
+const Comparison: React.FC = () => {
   const firstPackageData = useSelector(
     (state: State) => state.firstPackageData
   );
@@ -68,10 +62,14 @@ const Comparison:React.FC = () => {
     if (record.name === "License" && Array.isArray(value)) {
       return (
         <>
-          {value.map((val, index) => { if (val) return<Tag key={index} className="tag" color="gold">
-              {val}
-            </Tag>
-    })}
+          {value.map((val, index) => {
+            if (val)
+              return (
+                <Tag key={index} className="tag" color="gold">
+                  {val}
+                </Tag>
+              );
+          })}
         </>
       );
     }
@@ -208,7 +206,15 @@ const Comparison:React.FC = () => {
 
   return (
     <Card title="Comparison" bordered={false} className="card">
-      <ConfigProvider theme={{ token: { borderRadius: 2, fontFamily:'Roboto-Regular', fontSize:14 } }}>
+      <ConfigProvider
+        theme={{
+          token: {
+            borderRadius: 2,
+            fontFamily: "Roboto-Regular",
+            fontSize: 14,
+          },
+        }}
+      >
         <Table
           columns={columns}
           dataSource={data}

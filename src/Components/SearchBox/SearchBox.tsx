@@ -10,14 +10,8 @@ import { useState } from "react";
 import { debounce } from "lodash";
 import { useDispatch } from "react-redux";
 import { storeSelectedPackagesData } from "../../state/slice";
+import { PackageItem, PackageOption } from "../../utils/types";
 
-interface PackageOption {
-  value: string;
-  title: string;
-}
-interface PackageItem {
-  package: { name: string };
-}
 const SearchBox: React.FC = () => {
   const [isCompareBtnLoading, setIsCompareBtnLoading] =
     useState<boolean>(false);
@@ -34,10 +28,16 @@ const SearchBox: React.FC = () => {
   };
 
   const fetchSelectedPackgesDetails = async (value: string) => {
-    const encodedVal = encodeURIComponent(value).replace(/%40/g, "@");
-    const fetchFn = await fetch(`https://api.npms.io/v2/package/${encodedVal}`);
-    const response = await fetchFn.json();
-    return response;
+    try {
+      const encodedVal = encodeURIComponent(value).replace(/%40/g, "@");
+      const fetchFn = await fetch(
+        `https://api.npms.io/v2/package/${encodedVal}`
+      );
+      const response = await fetchFn.json();
+      return response;
+    } catch (error) {
+      showCouldntFetchDataError(value);
+    }
   };
   const handleUserSearch = (searchedValue: string) => {
     if (searchedValue) {
@@ -69,13 +69,21 @@ const SearchBox: React.FC = () => {
       icon: <CloseCircleOutlined className={styles.crossIconError} />,
     });
   };
+  const showCouldntFetchDataError = (packageName: string) => {
+    api.error({
+      message: "Error",
+      description: `Failed to fetch data for package: ${packageName}`,
+      placement: "bottomRight",
+      icon: <CloseCircleOutlined className={styles.crossIconError} />,
+    });
+  };
   const debouncedSearch = debounce(handleUserSearch, 500);
   const handleSearchChange = (value: string[]) => {
     setSelectedPackages(value);
+    value.length > 2 ? showPackageSelectionError() : null;
   };
 
   const handleCompare = async () => {
-    selectedPackages.length > 2 ? showPackageSelectionError() : null;
     if (selectedPackages.length > 2) {
       return;
     } else {
@@ -126,7 +134,7 @@ const SearchBox: React.FC = () => {
         />
 
         <Button
-          disabled={selectedPackages.length < 2}
+          disabled={selectedPackages.length !== 2}
           type="primary"
           icon={isCompareBtnLoading ? <LoadingOutlined /> : <SearchOutlined />}
           onClick={handleCompare}
