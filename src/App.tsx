@@ -1,11 +1,11 @@
 import { useSelector } from "react-redux";
 import "./App.css";
-import Comparison from "./Components/Comparison/Comparison";
-import Downloads from "./Components/Downloads/Downloads";
-import NavBar from "./Components/NavBar/NavBar";
-import Recommendation from "./Components/Recommendation/Recommendation";
-import SearchBox from "./Components/SearchBox/SearchBox";
 import { State } from "./utils/types";
+import Downloads from "./components/downloads/Downloads";
+import NavBar from "./components/navbar/NavBar";
+import SearchBox from "./components/searchbox/SearchBox";
+import Comparison from "./components/comparison/Comparison";
+import Recommendation from "./components/recommendation/Recommendation";
 
 function App() {
   const selectedPackagesData = useSelector((state: State) => [

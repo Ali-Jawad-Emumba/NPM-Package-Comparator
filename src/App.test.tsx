@@ -1,10 +1,10 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { it, expect } from "vitest";
-import NavBar from "./Components/NavBar/NavBar";
-import SearchBox from "./Components/SearchBox/SearchBox";
-import Comparison from "./Components/Comparison/Comparison";
+import NavBar from "./components/navbar/NavBar";
+import SearchBox from "./components/searchbox/SearchBox";
+import Comparison from "./components/comparison/Comparison";
 import { Card } from "antd";
-import Recommendation from "./Components/Recommendation/Recommendation";
+import Recommendation from "./components/recommendation/Recommendation";
 import { Provider, useSelector } from "react-redux";
 import store from "./state/store";
 import { State } from "./utils/types";
