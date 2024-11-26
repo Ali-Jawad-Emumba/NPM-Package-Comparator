@@ -6,7 +6,9 @@ import docIcon from "../../assets/documnetation icon.svg";
 import infoIcon from "../../assets/info icon.svg";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { RecommendedPackage, ScoreData, State } from "../../utils/types";
+import { RecommendedPackage, State } from "../../utils/types";
+import { compareBothPackages } from "./Recommendation.service";
+import { formatCount } from "../../utils/utilities";
 
 const Recommendation: React.FC = () => {
   const [recommendedPackage, setRecommendedPackage] =
@@ -19,71 +21,10 @@ const Recommendation: React.FC = () => {
   const secondPackageData = useSelector(
     (state: State) => state.secondPackageData
   );
-  useEffect(() => compareBothPackages(), [firstPackageData, secondPackageData]);
-
-  const compareBothPackages = () => {
-    const evalutaionFirstPackage = firstPackageData.evaluation;
-    const evaluationSecondPackage = secondPackageData.evaluation;
-
-    const getScores = (data: ScoreData) => ({
-      communityInterest: (data?.popularity.communityInterest / 100) * 30,
-      downloads: data?.popularity.downloadsCount / 2,
-      testsAndCarefulness:
-        ((data?.quality.tests + data?.quality.carefulness) / 100) * 30,
-    });
-    const firstPackageScores = getScores(evalutaionFirstPackage);
-    const secondPackageScores = getScores(evaluationSecondPackage);
-    const totalScoreFirstPackage = Object.values(firstPackageScores).reduce(
-      (sum, score) => (sum += score),
-      0
-    );
-    const totalScoreSecondPackage = Object.values(secondPackageScores).reduce(
-      (sum, score) => (sum += score),
-      0
-    );
-
-    const betterPackage =
-      totalScoreFirstPackage > totalScoreSecondPackage
-        ? firstPackageData
-        : secondPackageData;
-    const differenceInScore =
-      totalScoreFirstPackage > totalScoreSecondPackage
-        ? totalScoreFirstPackage - totalScoreSecondPackage
-        : totalScoreSecondPackage - totalScoreFirstPackage;
-    const timesBetter =
-      totalScoreFirstPackage > totalScoreSecondPackage
-        ? differenceInScore / totalScoreSecondPackage
-        : differenceInScore / totalScoreFirstPackage;
-
-    const data = {
-      name: betterPackage.collected.metadata.name,
-      description: betterPackage.collected.metadata.description,
-      keywords: betterPackage.collected.metadata.keywords,
-      repository: betterPackage.collected.metadata.links.repository,
-      downloadsCount: betterPackage.evaluation?.popularity.downloadsCount,
-      starsCount: betterPackage.collected.npm?.starsCount,
-      health: betterPackage.evaluation?.quality.health,
-      timesBetter: timesBetter,
-    };
-
-    setRecommendedPackage(data);
-  };
-
-  const formatCount = (val: number) => {
-    const formatWithSuffix = (divisor: number, suffix: string) =>
-      `${Math.round(val / divisor)}${suffix}${val > divisor ? "+" : ""}`;
-
-    if (val >= 1000000000) {
-      return formatWithSuffix(1000000000, "B");
-    } else if (val >= 1000000) {
-      return formatWithSuffix(1000000, "M");
-    } else if (val >= 1000) {
-      return formatWithSuffix(1000, "K");
-    } else if (val % 1 !== 0) return val?.toFixed(2);
-    else {
-      return val;
-    }
-  };
+  useEffect(() => {
+    let recommended = compareBothPackages(firstPackageData, secondPackageData);
+    setRecommendedPackage(recommended);
+  }, [firstPackageData, secondPackageData]);
 
   return (
     <Card

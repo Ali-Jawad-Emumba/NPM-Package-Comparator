@@ -11,6 +11,7 @@ import { debounce } from "lodash";
 import { useDispatch } from "react-redux";
 import { storeSelectedPackagesData } from "../../state/slice";
 import { PackageItem, PackageOption } from "../../utils/types";
+import { fetchPackages, fetchSelectedPackgesDetails, showError } from "./SearchBox.service";
 
 const SearchBox: React.FC = () => {
   const [isCompareBtnLoading, setIsCompareBtnLoading] =
@@ -21,24 +22,6 @@ const SearchBox: React.FC = () => {
   const [api, contextHolder] = notification.useNotification();
   const dispatch = useDispatch();
 
-  const fetchPackages = async (value: string) => {
-    const fetchFn = await fetch(`https://api.npms.io/v2/search?q=${value}`);
-    const response = await fetchFn.json();
-    return response.results;
-  };
-
-  const fetchSelectedPackgesDetails = async (value: string) => {
-    try {
-      const encodedVal = encodeURIComponent(value).replace(/%40/g, "@");
-      const fetchFn = await fetch(
-        `https://api.npms.io/v2/package/${encodedVal}`
-      );
-      const response = await fetchFn.json();
-      return response;
-    } catch (error) {
-      showCouldntFetchDataError(value);
-    }
-  };
   const handleUserSearch = (searchedValue: string) => {
     if (searchedValue) {
       setIsListLoading(true);
@@ -61,26 +44,17 @@ const SearchBox: React.FC = () => {
       return;
     }
   };
-  const showPackageSelectionError = () => {
-    api.error({
-      message: "Error",
-      description: "You can only select 2 packages for comparison",
-      placement: "bottomRight",
-      icon: <CloseCircleOutlined className={styles.crossIconError} />,
-    });
-  };
-  const showCouldntFetchDataError = (packageName: string) => {
-    api.error({
-      message: "Error",
-      description: `Failed to fetch data for package: ${packageName}`,
-      placement: "bottomRight",
-      icon: <CloseCircleOutlined className={styles.crossIconError} />,
-    });
-  };
+
   const debouncedSearch = debounce(handleUserSearch, 500);
   const handleSearchChange = (value: string[]) => {
     setSelectedPackages(value);
-    value.length > 2 ? showPackageSelectionError() : null;
+    value.length > 2
+      ? showError(
+          api,
+          "You can only select 2 packages for comparison",
+          <CloseCircleOutlined className={styles.crossIconError} />
+        )
+      : null;
   };
 
   const handleCompare = async () => {
@@ -90,7 +64,12 @@ const SearchBox: React.FC = () => {
       setIsCompareBtnLoading(true);
       let selectedPackagesData = await Promise.all(
         selectedPackages.map(
-          async (val) => await fetchSelectedPackgesDetails(val)
+          async (packageName) =>
+            await fetchSelectedPackgesDetails(
+              packageName,
+              api,
+              <CloseCircleOutlined className={styles.crossIconError} />
+            )
         )
       );
       selectedPackagesData = selectedPackagesData.filter((data) => !data.code);

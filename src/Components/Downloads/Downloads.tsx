@@ -3,7 +3,8 @@ import { Line } from "@ant-design/plots";
 import styles from "./Downloads.module.css";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { DateOfDownload, DownloadData, State } from "../../utils/types";
+import {DownloadData, State } from "../../utils/types";
+import { prepareDataForDownloads } from "./Downloads.service";
 
 const Downloads: React.FC = () => {
   const [downloadsData, setDownloadsData] = useState<DownloadData[]>([]);
@@ -24,34 +25,11 @@ const Downloads: React.FC = () => {
   };
 
   useEffect(() => {
-    prepareDataForDownloads();
+    let combinedData = prepareDataForDownloads(firstPackageData.collected, secondPackageData.collected);
+    setDownloadsData(combinedData);
   }, [firstPackageData, secondPackageData]);
 
-  const prepareDataForDownloads = () => {
-    const convertToDate = (val: string | number | Date) =>
-      new Date(val).toLocaleDateString();
-    const dataFirstPackage = firstPackageData.collected;
-    const dataSecondPackage = secondPackageData.collected;
-
-    const getPreparedData = (packageData: any) =>
-      packageData.npm?.downloads.map((data: DateOfDownload) => ({
-        date: `${convertToDate(data.from)}-${convertToDate(data.to)}`,
-        downloads: data.count,
-        package: packageData.metadata.name,
-      }));
-    const preparedDataFirstPackage = getPreparedData(dataFirstPackage);
-    const preparedDataSecondPackage = getPreparedData(dataSecondPackage);
-    const combinedData = [
-      ...(preparedDataFirstPackage || []),
-      ...(preparedDataSecondPackage || []),
-    ];
-    combinedData.sort((a, b) => {
-      const dateA = new Date(a.date.split("-")[0]); // Get the first date from 'from-to' format
-      const dateB = new Date(b.date.split("-")[0]); // Get the first date from 'from-to' format
-      return dateA.getTime() - dateB.getTime(); // Sort in ascending order (oldest first)
-    });
-    setDownloadsData(combinedData);
-  };
+  
 
   return (
     <Card title="Downloads" bordered={false} className="card">

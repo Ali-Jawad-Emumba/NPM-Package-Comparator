@@ -17,21 +17,21 @@
 .crossIconError {
   color: #1890ff;
 }
-.compareBtn{
+.compareBtn {
   height: 40px;
-  font-family: 'Roboto-Regular';
+  font-family: "Roboto-Regular";
   font-size: 1.6rem;
-  width:100%
+  width: 100%;
+  padding: 0 8px;
 }
-.treeSelect{
-  width:100%
+.treeSelect {
+  width: 100%;
 }
 
-@media screen and (min-width:992px) {
+@media screen and (min-width: 992px) {
   .searchBoxContainer {
     display: grid;
     grid-template-columns: 1fr 17%;
     justify-content: center;
   }
-   
 }
