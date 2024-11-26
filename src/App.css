@@ -90,6 +90,19 @@ html {
   padding: 24px 12px;
 }
 
+/* style change download chart */
+.g2-tooltip{
+  background-color: rgba(0,0,0,0.8)!important;
+  color:white!important
+}
+.g2-tooltip-title{
+  color:lightgray!important
+}
+.g2-tooltip-list-item-value{
+  color:white!important
+}
+
+
 /* fonts addition */
 @font-face {
   font-family: "Roboto-Medium";

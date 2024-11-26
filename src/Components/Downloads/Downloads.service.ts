@@ -8,7 +8,7 @@ export const prepareDataForDownloads = (
     new Date(val).toLocaleDateString();
   const getPreparedData = (packageData: any) =>
     packageData.npm?.downloads.map((data: DateOfDownload) => ({
-      date: `${convertToDate(data.from)}-${convertToDate(data.to)}`,
+      date: `${convertToDate(data.from)}`,
       downloads: data.count,
       package: packageData.metadata.name,
     }));
