@@ -1,13 +1,8 @@
-import { Button, Card, ConfigProvider, Table, TableProps, Tag } from "antd";
+import { Button, Card, ConfigProvider, Table, Tag } from "antd";
 import { useSelector } from "react-redux";
 import styles from "./Comparison.module.css";
-import { ComparisonColumns, State } from "../../utils/types";
-import {
-  checkDateAge,
-  checkForEmptyArray,
-  getAuthorsPublishersForPackage,
-  getMaintainersForPackage,
-} from "./Comparison.service";
+import { State } from "../../utils/types";
+import { checkDateAge, getColumns, getTabelData } from "./Comparison.service";
 
 const Comparison: React.FC = () => {
   const firstPackageData = useSelector(
@@ -84,81 +79,6 @@ const Comparison: React.FC = () => {
     }
     return value;
   };
-  const columns: TableProps<ComparisonColumns>["columns"] = [
-    {
-      title: "Package Name",
-      dataIndex: "name",
-      key: "1",
-      rowScope: "row",
-      width: "25%",
-    },
-    {
-      title: metaDataFirstPackage.name,
-      dataIndex: "package1",
-      key: "2",
-      width: "35%",
-      align: "center",
-      render: (value: any[], record: { name: string }) =>
-        renderCells(record, value, "firstPackage"),
-    },
-    {
-      title: metaDataSecondPackage.name,
-      dataIndex: "package2",
-      key: "3",
-      width: "35%",
-      align: "center",
-      render: (value: any[], record: { name: string }) =>
-        renderCells(record, value, "secondPackage"),
-    },
-  ];
-  const data: ComparisonColumns[] = [
-    {
-      key: "1",
-      name: "Description",
-      package1: metaDataFirstPackage.description,
-      package2: metaDataSecondPackage.description,
-    },
-    {
-      key: "2",
-      name: "Keywords",
-      package1: checkForEmptyArray(metaDataFirstPackage.keywords),
-      package2: checkForEmptyArray(metaDataSecondPackage.keywords),
-    },
-    {
-      key: "3",
-      name: "Repository",
-      package1: checkForEmptyArray(Object.keys(metaDataFirstPackage.links)),
-      package2: checkForEmptyArray(Object.keys(metaDataSecondPackage.links)),
-    },
-    {
-      key: "4",
-      name: "License",
-      package1: Array.isArray(metaDataFirstPackage.license)
-        ? metaDataFirstPackage.license
-        : [metaDataFirstPackage.license],
-      package2: Array.isArray(metaDataSecondPackage.license)
-        ? metaDataSecondPackage.license
-        : [metaDataSecondPackage.license],
-    },
-    {
-      key: "5",
-      name: "Last Modification Date",
-      package1: [metaDataFirstPackage.date],
-      package2: [metaDataSecondPackage.date],
-    },
-    {
-      key: "6",
-      name: "Authors/Publishers",
-      package1: getAuthorsPublishersForPackage(metaDataFirstPackage),
-      package2: getAuthorsPublishersForPackage(metaDataSecondPackage),
-    },
-    {
-      key: "7",
-      name: "Maintainers",
-      package1: getMaintainersForPackage(metaDataFirstPackage),
-      package2: getMaintainersForPackage(metaDataSecondPackage),
-    },
-  ];
 
   return (
     <Card title="Comparison" bordered={false} className="card">
@@ -172,8 +92,12 @@ const Comparison: React.FC = () => {
         }}
       >
         <Table
-          columns={columns}
-          dataSource={data}
+          columns={getColumns(
+            metaDataFirstPackage,
+            metaDataSecondPackage,
+            renderCells
+          )}
+          dataSource={getTabelData(metaDataFirstPackage, metaDataSecondPackage)}
           pagination={false}
           bordered
           tableLayout="fixed"
